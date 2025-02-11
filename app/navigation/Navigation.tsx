@@ -7,6 +7,7 @@ import HomeScreen from '../screens/HomeScreen';
 import TeamsScreen from '../screens/TeamsScreen';
 import EventsScreen from '../screens/EventsScreen';
 import CreateTeamScreen from '../screens/CreateTeamScreen';
+import ProfileScreen from '../screens/ProfileScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -20,6 +21,7 @@ export default function Navigation() {
         <Stack.Screen name="Teams" component={TeamsScreen} />
         <Stack.Screen name="Events" component={EventsScreen} />
         <Stack.Screen name="CreateTeam" component={CreateTeamScreen} />
+        <Stack.Screen name="Profile" component={ProfileScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

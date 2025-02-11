@@ -8,6 +8,7 @@ export default function HomeScreen({ navigation }: any) {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Welcome, {user?.name || 'Guest'}!</Text>
+      <Button title="Profile" onPress={() => navigation.navigate('Profile')} />
       <Button title="View Teams" onPress={() => navigation.navigate('Teams')} />
       <Button title="Schedule Training" onPress={() => Alert.alert('Training', 'Navigate to Training screen')} />
       <Button title="View Events" onPress={() => navigation.navigate('Events')} />

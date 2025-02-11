@@ -20,3 +20,17 @@ export const createUser = async (email: string, name: string, teamId?: number) =
     throw error;
   }
 };
+
+export const getUserProfile = async (userId: number) => {
+  const response = await fetch(`${API_BASE_URL}/users/profile/${userId}`);
+  return response.json();
+}
+
+export const updatedUserProfile = async (userId: number, name: string, email: string) => {
+  const response = await fetch(`${API_BASE_URL}/users/profile/${userId}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name, email }),
+  });
+  return response.json();
+}
