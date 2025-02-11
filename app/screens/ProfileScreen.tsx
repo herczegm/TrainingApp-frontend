@@ -2,10 +2,12 @@ import React, { useEffect, useState} from "react";
 import { View, Text, TextInput, Button, StyleSheet, Alert } from "react-native";
 import { useUser } from '../context/UserContext';
 import { getUserProfile, updatedUserProfile } from "../services/userService";
+import { joinTeam, leaveTeam } from "../services/teamService";
 
 const ProfileScreen = () => {
-    const { user } = useUser();
-    const [profile, setProfile] = useState({ name: '', email: '' });
+    const { user, setUser } = useUser();
+    const [profile, setProfile] = useState({ name: '', email: '', team_id: null });
+    const [teamCode, setTeamCode] = useState('');
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -17,7 +19,7 @@ const ProfileScreen = () => {
     const fetchProfile = async (userId: number) => {
         try {
             const data = await getUserProfile(userId);
-            setProfile({ name: data.name, email: data.email });
+            setProfile({ name: data.name, email: data.email, team_id: data.team_id });
             setLoading(false);
         } catch (error) {
             console.error('Error fetching profile:', error);
@@ -33,6 +35,40 @@ const ProfileScreen = () => {
             }
         } catch (error) {
             console.error('Error updating profile:', error);
+        }
+    };
+
+    const handleJoinTeam = async () => {
+        if (!teamCode) {
+            Alert.alert('Error', 'Please enter a team code');
+            return;
+        }
+        try {
+            if (user){
+                const response = await joinTeam(user.id, teamCode);
+                if (response.error) {
+                    Alert.alert('Error', response.error);
+                } else {
+                    setProfile({ ...profile, team_id: response.teamId });
+                    setUser({ ...user, team_id: response.teamId });
+                    Alert.alert('Success', 'You joined the team!');
+                }
+            }
+        } catch (error) {
+            console.error('Error joining team:', error);
+        }
+    };
+
+    const handleLeaveTeam = async () => {
+        try {
+            if (user){
+                await leaveTeam(user.id);
+                setProfile({ ...profile, team_id: null });
+                setUser({ ...user, team_id: null });
+                Alert.alert('Success', 'You left the team!');
+            }
+        } catch (error) {
+            console.error('Error leaving team:', error);
         }
     };
 
@@ -55,6 +91,23 @@ const ProfileScreen = () => {
                 keyboardType="email-address"
             />
             <Button title="Save Changes" onPress={handleSave} />
+
+            {profile.team_id ? (
+                <>
+                    <Text>Current Team: {profile.team_id}</Text>
+                    <Button title="Leave Team" onPress={handleLeaveTeam} />
+                </>
+            ) : (
+                <>
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Enter Team Code"
+                        value={teamCode}
+                        onChangeText={setTeamCode}
+                    />
+                    <Button title="Join Team" onPress={handleJoinTeam} />
+                </>
+            )}
         </View>
     )
 };

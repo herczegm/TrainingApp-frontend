@@ -39,3 +39,36 @@ export const deleteTeam = async (id: number) => {
     throw error;
   }
 };
+
+export const joinTeam = async (userId: number, teamCode: string) => {
+  const response = await fetch(`${API_BASE_URL}/teams/join`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId, teamCode }),
+  });
+  return response.json();
+};
+
+/* export const leaveTeam = async (userId: number) => {
+  const response = await fetch(`${API_BASE_URL}/teams/leave`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId }),
+  });
+  
+  return response.json();
+}; */
+export const leaveTeam = async (userId: number) => {
+  try {
+      const response = await fetch(`${API_BASE_URL}/teams/leave`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ userId }),
+      });
+
+      return response.json();
+  } catch (error) {
+      console.error('Error leaving team:', error);
+      throw error;
+  }
+};
